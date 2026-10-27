@@ -12,8 +12,8 @@ namespace NorthwindPizza.Api.Controllers;
 /// <param name="orderStatusRepo">The relevant order status repository injection.</param>
 /// <param name="logger">The relevant logging mechanism injection.</param>
 [ApiController]
-[Route("api/[controller]")]
 [Tags("Order Status")]
+[Route("api/[controller]")]
 public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogger<OrderStatusController> logger) 
     : ControllerBase
 {

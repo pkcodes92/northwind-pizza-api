@@ -14,3 +14,19 @@ public partial class Pizza
 
     public int IsActive { get; set; }
 }
+
+public static class PizzaExtensions
+{
+    public static DTO.Models.Pizza ToDto(this Pizza value)
+    {
+        return new DTO.Models.Pizza
+        {
+            Id = value.PizzaId,
+            Name = value.Name,
+            Description = value.Description,
+            BasePrice = value.BasePrice,
+            Image = value.ImageUrl,
+            IsActive = value.IsActive == 1
+        };
+    }
+}
