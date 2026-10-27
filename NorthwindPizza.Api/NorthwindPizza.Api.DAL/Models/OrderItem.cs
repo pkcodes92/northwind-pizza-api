@@ -14,3 +14,17 @@ public partial class OrderItem
 
     public decimal LineTotal { get; set; }
 }
+
+public static class OrderItemExtensions
+{
+    public static DTO.Models.OrderItem ToDto(this OrderItem value)
+    {
+        return new DTO.Models.OrderItem
+        {
+            LineTotal = value.LineTotal,
+            PizzaId = value.PizzaId,
+            Quantity = value.Quantity,
+            UnitPrice = value.UnitPrice
+        };
+    }
+}

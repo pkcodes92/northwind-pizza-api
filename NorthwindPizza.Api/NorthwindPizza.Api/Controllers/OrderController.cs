@@ -17,16 +17,23 @@ namespace NorthwindPizza.Api.Controllers;
 /// <param name="logger">The relevant logging mechanism injection.</param>
 /// <param name="orderRepo">The necessary order repository injection.</param>
 /// <param name="orderSvc">The relevant order service injection.</param>
+/// <param name="orderItemRepo">The relevant order item repository injection.</param>
 [ApiController]
 [Tags("Orders")]
 [Route("api/orders")]
-public class OrderController(ILogger<OrderController> logger, IOrderRepository orderRepo, IOrderService orderSvc) : ControllerBase
+public class OrderController(
+    ILogger<OrderController> logger,
+    IOrderRepository orderRepo,
+    IOrderService orderSvc,
+    IOrderItemRepository orderItemRepo) : ControllerBase
 {
     private readonly ILogger<OrderController> logger = logger;
 
     private readonly IOrderRepository orderRepo = orderRepo;
 
     private readonly IOrderService orderSvc = orderSvc;
+
+    private readonly IOrderItemRepository orderItemRepo = orderItemRepo;
 
     /// <summary>
     /// This endpoint will get all of the various orders from the database.
@@ -62,6 +69,10 @@ public class OrderController(ILogger<OrderController> logger, IOrderRepository o
         this.logger.LogInformation("Creating a new order");
 
         var createdOrder = await this.orderSvc.CreateOrderAsync(request);
+
+        var orderItems = await this.orderItemRepo.GetOrderItemsAsync(createdOrder!.Id);
+
+        createdOrder.Items = orderItems.Select(x => x.ToDto()).ToList();
 
         return this.StatusCode(StatusCodes.Status201Created, new CreateOrderResponse
         {

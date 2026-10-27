@@ -3,39 +3,34 @@ using NorthwindPizza.Api.DAL.Repository.Interfaces;
 using NorthwindPizza.Api.DTO.Request;
 using NorthwindPizza.Api.Services.Interfaces;
 
-namespace NorthwindPizza.Api.Services
+namespace NorthwindPizza.Api.Services;
+
+public class OrderService(IOrderRepository orderRepo, ICustomerRepository customerRepo, IPizzaRepository pizzaRepo) 
+    : IOrderService
 {
-    public class OrderService(
-        IOrderRepository orderRepo,
-        ICustomerRepository customerRepo,
-        IPizzaRepository pizzaRepo) : IOrderService
+    private readonly IOrderRepository orderRepo = orderRepo;
+
+    private readonly ICustomerRepository customerRepo = customerRepo;
+
+    private readonly IPizzaRepository pizzaRepo = pizzaRepo;
+    
+    public async Task<DTO.Models.Order?> CreateOrderAsync(CreateOrderRequest request)
     {
-        private readonly IOrderRepository orderRepo = orderRepo;
-
-        private readonly ICustomerRepository customerRepo = customerRepo;
-
-        private readonly IPizzaRepository pizzaRepo = pizzaRepo;
-        
-        public async Task<DTO.Models.Order?> CreateOrderAsync(CreateOrderRequest request)
+        if (request.CustomerId <= 0 ||
+       request.Items is null ||
+       request.Items.Count == 0 ||
+       request.Items.Any(i => i.PizzaId <= 0 || i.Quantity <= 0) ||
+       request.Items.GroupBy(i => i.PizzaId)
+           .Any(g => g.Count() > 1))
         {
-            if (request.CustomerId <= 0 ||
-           request.Items is null ||
-           request.Items.Count == 0 ||
-           request.Items.Any(i => i.PizzaId <= 0 || i.Quantity <= 0) ||
-           request.Items.GroupBy(i => i.PizzaId)
-               .Any(g => g.Count() > 1))
-            {
-                throw new ArgumentException("The order request is invalid.");
-            }
+            throw new ArgumentException("The order request is invalid.");
+        }
 
-            // Verify the customer exists.
-            var customer = await customerRepo.GetCustomerAsync(request.CustomerId);
+        // Verify the customer exists.
+        var customer = await customerRepo.GetCustomerAsync(request.CustomerId);
 
-            if (customer is null)
-            {
-                throw new KeyNotFoundException("Customer not found.");
-            }
-
+        if (customer is not null)
+        {
             var orderItems = new List<OrderItem>();
             decimal totalAmount = 0;
 
@@ -43,42 +38,45 @@ namespace NorthwindPizza.Api.Services
             {
                 var pizza = await pizzaRepo.GetPizzaAsync(requestedItem.PizzaId);
 
-                if (pizza is null)
+                if (pizza is not null)
                 {
-                    throw new KeyNotFoundException(
-                        $"Pizza {requestedItem.PizzaId} not found.");
+                    if (!pizza.ToDto().IsActive)
+                    {
+                        throw new ArgumentException($"Pizza {requestedItem.PizzaId} is inactive.");
+                    }
+
+                    var unitPrice = pizza.BasePrice;
+                    var lineTotal = unitPrice * requestedItem.Quantity;
+
+                    orderItems.Add(new OrderItem
+                    {
+                        PizzaId = pizza.PizzaId,
+                        Quantity = requestedItem.Quantity,
+                        UnitPrice = unitPrice,
+                        LineTotal = lineTotal
+                    });
+
+                    totalAmount += lineTotal;
                 }
-
-                if (!pizza.ToDto().IsActive)
+                else
                 {
-                    throw new ArgumentException(
-                        $"Pizza {requestedItem.PizzaId} is inactive.");
+                    throw new KeyNotFoundException($"Pizza {requestedItem.PizzaId} not found.");
                 }
-
-                var unitPrice = pizza.BasePrice;
-                var lineTotal = unitPrice * requestedItem.Quantity;
-
-                orderItems.Add(new OrderItem
-                {
-                    PizzaId = pizza.PizzaId,
-                    Quantity = requestedItem.Quantity,
-                    UnitPrice = unitPrice,
-                    LineTotal = lineTotal
-                });
-
-                totalAmount += lineTotal;
             }
 
-            var order = new DAL.Models.Order
+            var order = new Order
             {
                 CustomerId = request.CustomerId,
                 OrderStatusId = 1, // Assumes 1 = Pending
-                TotalAmount = totalAmount
+                TotalAmount = totalAmount,
+                OrderDate = DateTime.Now.ToString("G")
             };
 
             var dbOrder = await this.orderRepo.CreateOrderAsync(order, orderItems);
 
             return dbOrder.ToDto();
         }
+
+        throw new KeyNotFoundException("Customer not found.");
     }
 }
