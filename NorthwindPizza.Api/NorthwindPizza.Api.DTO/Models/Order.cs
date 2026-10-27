@@ -11,4 +11,6 @@ public class Order
     public string OrderDate { get; set; } = string.Empty;
 
     public decimal TotalAmount { get; set; }
+
+    public List<OrderItem> Items { get; set; } = null!;
 }
