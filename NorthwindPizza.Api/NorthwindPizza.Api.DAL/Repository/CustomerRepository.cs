@@ -1,11 +1,254 @@
-﻿using NorthwindPizza.Api.DAL.Repository.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.EntityFrameworkCore;
+using NorthwindPizza.Api.DAL.Context;
+using NorthwindPizza.Api.DAL.Models;
+using NorthwindPizza.Api.DAL.Repository.Interfaces;
 
-namespace NorthwindPizza.Api.DAL.Repository
+namespace NorthwindPizza.Api.DAL.Repository;
+
+public class CustomerRepository(NorthwindPizzaContext context) : ICustomerRepository
 {
-    public class CustomerRepository : ICustomerRepository
+    private readonly NorthwindPizzaContext context = context;
+
+    public async Task<Customer?> GetCustomerAsync(int id)
     {
+        return await this.context.Customers.FirstOrDefaultAsync(c => c.CustomerId == id);
+    }
+
+    public async Task<Customer> AddCustomerAsync(Customer customer)
+    {
+        if (string.IsNullOrWhiteSpace(customer.CreatedAt))
+        {
+            customer.CreatedAt = null!;
+        }
+
+        this.context.Customers.Add(customer);
+        await this.context.SaveChangesAsync();
+        return customer;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

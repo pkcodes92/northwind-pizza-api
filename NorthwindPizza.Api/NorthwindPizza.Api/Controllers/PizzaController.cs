@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NorthwindPizza.Api.DAL.Models;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
+using NorthwindPizza.Api.DTO.Models;
 using NorthwindPizza.Api.DTO.Response;
 
 namespace NorthwindPizza.Api.Controllers;
@@ -34,6 +35,24 @@ public class PizzaController(ILogger<PizzaController> logger, IPizzaRepository p
         return this.StatusCode(StatusCodes.Status200OK, new GetPizzasResponse
         {
             Pizzas = pizzas
+        });
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<GetPizzaResponse>> GetPizzaByIdAsync([FromRoute] int id)
+    {
+        this.logger.LogInformation("Getting pizza by ID {PizzaId}", id);
+
+        var dbPizza = await this.pizzaRepo.GetPizzaAsync(id);
+
+        if (dbPizza is null)
+        {
+            return this.NotFound("The pizza could not be found!");
+        }
+
+        return this.StatusCode(StatusCodes.Status200OK, new GetPizzaResponse
+        {
+            Pizza = dbPizza.ToDto()
         });
     }
 }

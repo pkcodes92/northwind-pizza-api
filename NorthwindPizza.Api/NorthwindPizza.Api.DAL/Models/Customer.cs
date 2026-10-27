@@ -14,3 +14,18 @@ public partial class Customer
 
     public string CreatedAt { get; set; } = string.Empty;
 }
+
+public static class CustomerExtensions
+{
+    public static DTO.Models.Customer ToDto(this Customer value)
+    {
+        return new DTO.Models.Customer
+        {
+            CustomerId = value.CustomerId,
+            Email = value.Email,
+            FirstName = value.FirstName,
+            LastName = value.LastName,
+            Phone = value.Phone
+        };
+    }
+}

@@ -12,3 +12,18 @@ public partial class Order
 
     public decimal TotalAmount { get; set; }
 }
+
+public static class OrderExtensions
+{
+    public static DTO.Models.Order ToDto(this Order value)
+    {
+        return new DTO.Models.Order
+        {
+            CustomerId = value.CustomerId,
+            Id = value.OrderId,
+            OrderStatusId = value.OrderStatusId,
+            OrderDate = value.OrderDate,
+            TotalAmount = value.TotalAmount
+        };
+    }
+}
