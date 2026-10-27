@@ -6,15 +6,28 @@ using NorthwindPizza.Api.DTO.Response;
 
 namespace NorthwindPizza.Api.Controllers;
 
+/// <summary>
+/// This class contains endpoints for the Customer entity.
+/// </summary>
+/// <param name="logger">The relevant logging mechanism injection.</param>
+/// <param name="customerRepo">The relevant customer repository injection.</param>
 [ApiController]
 [Tags("Customers")]
-[Route("api/[controller]")]
+[Route("api/customers")]
 public class CustomerController(ILogger<CustomerController> logger, ICustomerRepository customerRepo) : ControllerBase
 {
     private readonly ILogger<CustomerController> logger = logger;
 
     private readonly ICustomerRepository customerRepo = customerRepo;
 
+    /// <summary>
+    /// This endpoint will add a new customer to the database.
+    /// </summary>
+    /// <param name="request">The new customer that is being added.</param>
+    /// <returns>
+    /// A unit of execution that contains a type of <see cref="ActionResult{TValue}"/> that contains a type of
+    /// <see cref="GetCustomerResponse"/>.
+    /// </returns>
     [HttpPost]
     public async Task<ActionResult<GetCustomerResponse>> CreateCustomerAsync([FromBody] CreateCustomerRequest request)
     {
@@ -49,19 +62,20 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
 
         var createdCustomer = await this.customerRepo.AddCustomerAsync(customer);
 
-        return this.CreatedAtAction(nameof(this.GetCustomerByIdAsync), new { id = createdCustomer.CustomerId }, new GetCustomerResponse
+        return this.StatusCode(StatusCodes.Status201Created, new GetCustomerResponse
         {
-            Customer = new DTO.Models.Customer
-            {
-                CustomerId = createdCustomer.CustomerId,
-                FirstName = createdCustomer.FirstName,
-                LastName = createdCustomer.LastName,
-                Email = createdCustomer.Email,
-                Phone = createdCustomer.Phone
-            }
+            Customer = createdCustomer.ToDto()
         });
     }
 
+    /// <summary>
+    /// This endpoint will get a single customer to the database.
+    /// </summary>
+    /// <param name="id">The primary key of the customer to search.</param>
+    /// <returns>
+    /// A unit of execution that contains a type of <see cref="ActionResult{TValue}"/> that contains a type of
+    /// <see cref="GetCustomerResponse"/>.
+    /// </returns>
     [HttpGet("{id:int}")]
     public async Task<ActionResult<GetCustomerResponse>> GetCustomerByIdAsync([FromRoute] int id)
     {

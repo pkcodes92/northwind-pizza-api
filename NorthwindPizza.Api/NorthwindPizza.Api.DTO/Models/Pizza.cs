@@ -10,7 +10,7 @@ public class Pizza
 
     public decimal BasePrice { get; set; }
 
-    public string Image { get; set; }
+    public string Image { get; set; } = string.Empty;
 
     public bool IsActive { get; set; }
 }

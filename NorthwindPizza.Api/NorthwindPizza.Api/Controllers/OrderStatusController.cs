@@ -2,7 +2,6 @@
 using NorthwindPizza.Api.DAL.Models;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
 using NorthwindPizza.Api.DTO.Response;
-using System.ComponentModel;
 
 namespace NorthwindPizza.Api.Controllers;
 
@@ -13,7 +12,7 @@ namespace NorthwindPizza.Api.Controllers;
 /// <param name="logger">The relevant logging mechanism injection.</param>
 [ApiController]
 [Tags("Order Status")]
-[Route("api/[controller]")]
+[Route("api/orderstatuses")]
 public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogger<OrderStatusController> logger) 
     : ControllerBase
 {
@@ -28,7 +27,7 @@ public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogg
     /// A unit of execution that contains a type of <see cref="ActionResult{TValue}"/> that contains a type of
     /// <see cref="GetOrderStatusesResponse"/>.
     /// </returns>
-    [HttpGet("GetOrderStatuses")]
+    [HttpGet]
     public async Task<ActionResult<GetOrderStatusesResponse>> GetAllOrderStatusesAsync()
     {
         this.logger.LogInformation("Getting the order statuses from the database.");
@@ -54,7 +53,7 @@ public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogg
     /// A unit of execution that contains a type of <see cref="ActionResult{TValue}"/> which contains a type of
     /// <see cref="GetOrderStatusResponse"/>.
     /// </returns>
-    [HttpGet("GetOrderStatus/{id}")]
+    [HttpGet("id")]
     public async Task<ActionResult<GetOrderStatusResponse>> GetOrderStatusByIdAsync([FromRoute] int id)
     {
         this.logger.LogInformation("Getting the order status by the ID");

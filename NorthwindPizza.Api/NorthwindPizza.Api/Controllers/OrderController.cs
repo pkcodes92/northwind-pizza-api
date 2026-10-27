@@ -5,21 +5,38 @@ using NorthwindPizza.Api.DTO.Response;
 
 namespace NorthwindPizza.Api.Controllers;
 
+/// <summary>
+/// This class contains all the relevant endpoints for the Order entity.
+/// </summary>
+/// <remarks>
+/// TODO: Implement the endpoint of POST /api/orders
+/// TODO: Implement the endpoint of GET /api/orders/{id}
+/// TODO: Implement the endpoint of PATCH /api/orders/{id}/status
+/// </remarks>
+/// <param name="logger">The relevant logging mechanism injection.</param>
+/// <param name="orderRepo">The necessary order repository injection.</param>
 [ApiController]
 [Tags("Orders")]
-[Route("api/[controller]")]
+[Route("api/orders")]
 public class OrderController(ILogger<OrderController> logger, IOrderRepository orderRepo) : ControllerBase
 {
     private readonly ILogger<OrderController> logger = logger;
 
     private readonly IOrderRepository orderRepo = orderRepo;
 
+    /// <summary>
+    /// This endpoint will get all of the various orders from the database.
+    /// </summary>
+    /// <returns>
+    /// A unit of execution that contains a type of <see cref="ActionResult{TValue}"/> that contains a type of
+    /// <see cref="GetOrdersResponse"/>.
+    /// </returns>
     [HttpGet]
-    public async Task<ActionResult<GetOrdersResponse>> GetOrdersAsync([FromQuery] int? statusId = null)
+    public async Task<ActionResult<GetOrdersResponse>> GetOrdersAsync()
     {
-        this.logger.LogInformation("Getting orders with status filter {StatusId}", statusId);
+        this.logger.LogInformation("Getting all the orders");
 
-        var orders = await this.orderRepo.GetOrdersAsync(statusId);
+        var orders = await this.orderRepo.GetOrdersAsync();
 
         return this.Ok(new GetOrdersResponse
         {
