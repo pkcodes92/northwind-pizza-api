@@ -28,4 +28,9 @@ public static class CustomerExtensions
             Phone = value.Phone
         };
     }
+
+    public static string FullName(this Customer value)
+    {
+        return $"{value.FirstName} {value.LastName}";
+    }
 }

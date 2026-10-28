@@ -87,7 +87,7 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
     [HttpGet("{id:int}")]
     public async Task<ActionResult<GetCustomerResponse>> GetCustomerByIdAsync([FromRoute] int id)
     {
-        this.logger.LogInformation("Getting customer by ID {CustomerId}", id);
+        this.logger.LogInformation("Getting customer by ID {id}", id);
 
         var customer = await this.customerRepo.GetCustomerAsync(id);
 

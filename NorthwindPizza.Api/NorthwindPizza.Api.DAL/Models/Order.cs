@@ -15,13 +15,13 @@ public partial class Order
 
 public static class OrderExtensions
 {
-    public static DTO.Models.Order ToDto(this Order value)
+    public static DTO.Models.Order ToDto(this Order value, OrderStatus orderStatus, Customer customer)
     {
         return new DTO.Models.Order
         {
-            CustomerId = value.CustomerId,
+            Customer = customer.FullName(),
             Id = value.OrderId,
-            OrderStatusId = value.OrderStatusId,
+            OrderStatus = orderStatus.Name,
             OrderDate = value.OrderDate,
             TotalAmount = value.TotalAmount
         };

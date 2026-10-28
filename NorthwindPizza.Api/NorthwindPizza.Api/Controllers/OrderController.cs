@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using NorthwindPizza.Api.DAL.Models;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
+using NorthwindPizza.Api.DTO.Models;
 using NorthwindPizza.Api.DTO.Request;
 using NorthwindPizza.Api.DTO.Response;
 using NorthwindPizza.Api.Services.Interfaces;
@@ -13,13 +14,14 @@ namespace NorthwindPizza.Api.Controllers;
 /// <remarks>
 /// DONE: Implement the endpoint of POST /api/orders
 /// DONE: Implement the endpoint of GET /api/orders/{id}
-/// IN PROGRESS: Implement the endpoint of PATCH /api/orders/{id}/status
+/// DONE: Implement the endpoint of PATCH /api/orders/{id}/status
 /// </remarks>
 /// <param name="logger">The relevant logging mechanism injection.</param>
 /// <param name="orderRepo">The necessary order repository injection.</param>
 /// <param name="orderSvc">The relevant order service injection.</param>
 /// <param name="orderItemRepo">The relevant order item repository injection.</param>
 /// <param name="orderStatusRepo">The relevant order status repository injection.</param>
+/// <param name="customerRepo">The customer repository injection.</param>
 [ApiController]
 [Tags("Orders")]
 [Route("api/orders")]
@@ -28,7 +30,8 @@ public class OrderController(
     IOrderRepository orderRepo,
     IOrderService orderSvc,
     IOrderItemRepository orderItemRepo,
-    IOrderStatusRepository orderStatusRepo) : ControllerBase
+    IOrderStatusRepository orderStatusRepo,
+    ICustomerRepository customerRepo) : ControllerBase
 {
     private readonly ILogger<OrderController> logger = logger;
 
@@ -39,6 +42,8 @@ public class OrderController(
     private readonly IOrderItemRepository orderItemRepo = orderItemRepo;
 
     private readonly IOrderStatusRepository orderStatusRepo = orderStatusRepo;
+
+    private readonly ICustomerRepository customerRepo = customerRepo;
 
     /// <summary>
     /// This endpoint will get all of the various orders from the database.
@@ -54,9 +59,20 @@ public class OrderController(
 
         var orders = await this.orderRepo.GetOrdersAsync();
 
+        var dtoOrders = new List<DTO.Models.Order>();
+
+        foreach (var item in orders)
+        {
+            var dbCustomer = await this.customerRepo.GetCustomerAsync(item.CustomerId);
+
+            var dbOrderStatus = await this.orderStatusRepo.GetOrderStatusAsync(item.OrderStatusId);
+
+            dtoOrders.Add(item.ToDto(dbOrderStatus, dbCustomer!));
+        }
+
         return this.StatusCode(StatusCodes.Status200OK, new GetOrdersResponse
         {
-            Orders = orders.Select(x => x.ToDto()).ToList()
+            Orders = dtoOrders
         });
     }
 
@@ -104,7 +120,11 @@ public class OrderController(
         {
             var dbOrderItems = await this.orderItemRepo.GetOrderItemsAsync(dbOrder.OrderId);
 
-            var order = dbOrder.ToDto();
+            var dbOrderStatus = await this.orderStatusRepo.GetOrderStatusAsync(dbOrder.OrderStatusId);
+
+            var dbCustomer = await this.customerRepo.GetCustomerAsync(dbOrder.CustomerId);
+
+            var order = dbOrder.ToDto(dbOrderStatus, dbCustomer!);
 
             order.Items = dbOrderItems.Select(oi => oi.ToDto()).ToList();
 
@@ -150,9 +170,9 @@ public class OrderController(
 
                 if (dbUpdatedOrder is not null)
                 {
-                    this.logger.LogInformation("Order was successfully updated!");
+                    var dbCustomer = await this.customerRepo.GetCustomerAsync(dbUpdatedOrder.CustomerId);
 
-                    var updatedOrder = dbUpdatedOrder!.ToDto();
+                    var updatedOrder = dbUpdatedOrder!.ToDto(dbOrderStatus, dbCustomer!);
 
                     return this.StatusCode(StatusCodes.Status200OK, new PatchOrderResponse
                     {

@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Project Path="NorthwindPizza.Api.DAL/NorthwindPizza.Api.DAL.csproj" Id="f5801d34-6616-42cc-a633-8dca8175c9e6" />
   <Project Path="NorthwindPizza.Api.DTO/NorthwindPizza.Api.DTO.csproj" Id="036f779a-0b4e-4b11-8bb6-2cb6bf08a64a" />
   <Project Path="NorthwindPizza.Api.Services/NorthwindPizza.Api.Services.csproj" Id="e8649a08-c7aa-48f7-800a-c17a495eb577" />

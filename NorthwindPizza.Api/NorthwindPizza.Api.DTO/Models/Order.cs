@@ -4,9 +4,9 @@ public class Order
 {
     public int Id { get; set; }
 
-    public int CustomerId { get; set; }
+    public string Customer { get; set; } = string.Empty;
 
-    public int OrderStatusId { get; set; }
+    public string OrderStatus { get; set; } = string.Empty;
 
     public string OrderDate { get; set; } = string.Empty;
 
