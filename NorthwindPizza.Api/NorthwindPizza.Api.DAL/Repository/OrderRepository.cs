@@ -52,4 +52,12 @@ public class OrderRepository(NorthwindPizzaContext context) : IOrderRepository
             .OrderByDescending(o => o.OrderDate)
             .ToListAsync();
     }
+
+    public async Task<Order?> UpdateOrderAsync(Order order)
+    {
+        this.context.ChangeTracker.Clear();
+        this.context.Orders.Update(order);
+        var result = await this.context.SaveChangesAsync();
+        return result > 0 ? order : null!;
+    }
 }

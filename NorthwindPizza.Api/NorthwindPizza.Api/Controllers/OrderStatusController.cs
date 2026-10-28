@@ -53,7 +53,7 @@ public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogg
     /// A unit of execution that contains a type of <see cref="ActionResult{TValue}"/> which contains a type of
     /// <see cref="GetOrderStatusResponse"/>.
     /// </returns>
-    [HttpGet("id")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<GetOrderStatusResponse>> GetOrderStatusByIdAsync([FromRoute] int id)
     {
         this.logger.LogInformation("Getting the order status by the ID");

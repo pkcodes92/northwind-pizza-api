@@ -13,12 +13,13 @@ namespace NorthwindPizza.Api.Controllers;
 /// <remarks>
 /// DONE: Implement the endpoint of POST /api/orders
 /// DONE: Implement the endpoint of GET /api/orders/{id}
-/// TODO: Implement the endpoint of PATCH /api/orders/{id}/status
+/// IN PROGRESS: Implement the endpoint of PATCH /api/orders/{id}/status
 /// </remarks>
 /// <param name="logger">The relevant logging mechanism injection.</param>
 /// <param name="orderRepo">The necessary order repository injection.</param>
 /// <param name="orderSvc">The relevant order service injection.</param>
 /// <param name="orderItemRepo">The relevant order item repository injection.</param>
+/// <param name="orderStatusRepo">The relevant order status repository injection.</param>
 [ApiController]
 [Tags("Orders")]
 [Route("api/orders")]
@@ -26,7 +27,8 @@ public class OrderController(
     ILogger<OrderController> logger,
     IOrderRepository orderRepo,
     IOrderService orderSvc,
-    IOrderItemRepository orderItemRepo) : ControllerBase
+    IOrderItemRepository orderItemRepo,
+    IOrderStatusRepository orderStatusRepo) : ControllerBase
 {
     private readonly ILogger<OrderController> logger = logger;
 
@@ -35,6 +37,8 @@ public class OrderController(
     private readonly IOrderService orderSvc = orderSvc;
 
     private readonly IOrderItemRepository orderItemRepo = orderItemRepo;
+
+    private readonly IOrderStatusRepository orderStatusRepo = orderStatusRepo;
 
     /// <summary>
     /// This endpoint will get all of the various orders from the database.
@@ -50,10 +54,15 @@ public class OrderController(
 
         var orders = await this.orderRepo.GetOrdersAsync();
 
-        return this.Ok(new GetOrdersResponse
+        if (orders is not null)
         {
-            Orders = orders.Select(o => o.ToDto()).ToList()
-        });
+            return this.Ok(new GetOrdersResponse
+            {
+                Orders = orders.Select(o => o.ToDto()).ToList()
+            }); 
+        }
+
+        return this.NotFound("The orders could not be found!");
     }
 
     /// <summary>
@@ -81,6 +90,14 @@ public class OrderController(
         });
     }
 
+    /// <summary>
+    /// This endpoint will retrieve a single order from the database.
+    /// </summary>
+    /// <param name="id">The primary key of the order entity.</param>
+    /// <returns>
+    /// A unit of execution that contains a type of <see cref="ActionResult{TValue}"/> that contains a type of
+    /// <see cref="GetOrderResponse"/>.
+    /// </returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<GetOrderResponse>> GetOrderAsync([FromRoute] int id)
     {
@@ -100,6 +117,54 @@ public class OrderController(
             {
                 Order = order
             });
+        }
+
+        return this.NotFound("The order could not be found!");
+    }
+
+    /// <summary>
+    /// This endpoint will patch the relevant status of an existing order.
+    /// </summary>
+    /// <param name="id">The primary key of the order to update.</param>
+    /// <param name="request">The relevant order for which the status is to be updated.</param>
+    /// <returns>
+    /// A unit of execution that contains a type of <see cref="ActionResult{TValue}"/> that contains a type of
+    /// <see cref="PatchOrderResponse"/>.
+    /// </returns>
+    [HttpPatch("{id}/status")]
+    public async Task<ActionResult<PatchOrderResponse>> PatchOrderAsync([FromRoute] int id,
+        [FromBody] PatchOrderRequest request)
+    {
+        this.logger.LogInformation("Patching the order by updating the status");
+
+        var dbOrder = await this.orderRepo.GetOrderAsync(id);
+
+        if (dbOrder is not null)
+        {
+            var dbOrderStatus = await this.orderStatusRepo.GetOrderStatusAsync(request.StatusId);
+
+            if (dbOrderStatus is not null)
+            {
+                dbOrder.OrderStatusId = dbOrderStatus.OrderStatusId;
+
+                var dbUpdatedOrder = await this.orderRepo.UpdateOrderAsync(dbOrder);
+
+                if (dbUpdatedOrder is not null)
+                {
+                    this.logger.LogInformation("Order was successfully updated!");
+
+                    var updatedOrder = dbUpdatedOrder!.ToDto();
+
+                    return this.StatusCode(StatusCodes.Status200OK, new PatchOrderResponse
+                    {
+                        Order = updatedOrder
+                    });
+                }
+
+                return this.NotFound("The order could not be updated");
+            }
+
+            return this.NotFound("The order status cannot be found!");
         }
 
         return this.NotFound("The order could not be found!");
