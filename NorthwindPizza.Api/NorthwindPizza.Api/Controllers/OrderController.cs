@@ -54,18 +54,9 @@ public class OrderController(
 
         var orders = await this.orderRepo.GetOrdersAsync();
 
-        if (orders is not null)
+        return this.StatusCode(StatusCodes.Status200OK, new GetOrdersResponse
         {
-            return this.Ok(new GetOrdersResponse
-            {
-                Orders = orders.Select(o => o.ToDto()).ToList()
-            }); 
-        }
-
-        return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
-        {
-            StatusCode = StatusCodes.Status404NotFound,
-            Message = "The orders cannot be found!"
+            Orders = orders.Select(x => x.ToDto()).ToList()
         });
     }
 

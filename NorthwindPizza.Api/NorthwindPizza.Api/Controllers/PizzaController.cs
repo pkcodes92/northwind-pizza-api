@@ -33,15 +33,6 @@ public class PizzaController(ILogger<PizzaController> logger, IPizzaRepository p
 
         var dbPizzas = await this.pizzaRepo.GetAllPizzasAsync();
 
-        if (dbPizzas is null)
-        {
-            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
-            { 
-                StatusCode = StatusCodes.Status404NotFound, 
-                Message = "Not able to get the pizzas from the database!" 
-            });
-        }
-
         var pizzas = dbPizzas.Select(x => x.ToDto()).ToList();
 
         return this.StatusCode(StatusCodes.Status200OK, new GetPizzasResponse

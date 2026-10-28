@@ -120,15 +120,6 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
 
         var dbCustomers = await this.customerRepo.GetCustomersAsync();
 
-        if (dbCustomers is null)
-        {
-            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
-            {
-                StatusCode = StatusCodes.Status404NotFound,
-                Message = "The customers cannot be found!"
-            });
-        }
-
         return this.StatusCode(StatusCodes.Status200OK, new GetCustomersResponse
         {
             Customers = dbCustomers.Select(x => x.ToDto()).ToList()
