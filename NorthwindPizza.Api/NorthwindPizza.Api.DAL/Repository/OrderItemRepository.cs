@@ -9,8 +9,8 @@ namespace NorthwindPizza.Api.DAL.Repository;
 /// This class implements the methods defined in <see cref="IOrderItemRepository"/>.
 /// </summary>
 /// <remarks>
-/// TODO: Define and implement a method to get all of the order items based on an order ID
-/// TODO: Define and implement a method to insert the relevant order items for a particular order
+/// DONE: Define and implement a method to get all of the order items based on an order ID
+/// REVIEW: Define and implement a method to insert the relevant order items for a particular order
 /// </remarks>
 public class OrderItemRepository(NorthwindPizzaContext context) : IOrderItemRepository
 {

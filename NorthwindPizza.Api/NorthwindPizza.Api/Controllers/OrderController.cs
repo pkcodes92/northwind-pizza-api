@@ -11,7 +11,8 @@ namespace NorthwindPizza.Api.Controllers;
 /// This class contains all the relevant endpoints for the Order entity.
 /// </summary>
 /// <remarks>
-/// TODO: Implement the endpoint of GET /api/orders/{id}
+/// DONE: Implement the endpoint of POST /api/orders
+/// DONE: Implement the endpoint of GET /api/orders/{id}
 /// TODO: Implement the endpoint of PATCH /api/orders/{id}/status
 /// </remarks>
 /// <param name="logger">The relevant logging mechanism injection.</param>
@@ -78,5 +79,29 @@ public class OrderController(
         {
             Order = createdOrder!,
         });
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GetOrderResponse>> GetOrderAsync([FromRoute] int id)
+    {
+        this.logger.LogInformation("Getting the order by the ID");
+
+        var dbOrder = await this.orderRepo.GetOrderAsync(id);
+
+        if (dbOrder is not null)
+        {
+            var dbOrderItems = await this.orderItemRepo.GetOrderItemsAsync(dbOrder.OrderId);
+
+            var order = dbOrder.ToDto();
+
+            order.Items = dbOrderItems.Select(oi => oi.ToDto()).ToList();
+
+            return this.StatusCode(StatusCodes.Status200OK, new GetOrderResponse
+            {
+                Order = order
+            });
+        }
+
+        return this.NotFound("The order could not be found!");
     }
 }

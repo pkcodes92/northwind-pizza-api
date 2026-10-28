@@ -1,11 +1,12 @@
 ﻿using NorthwindPizza.Api.DAL.Models;
 
-namespace NorthwindPizza.Api.DAL.Repository.Interfaces
-{
-    public interface IOrderRepository
-    {
-        Task<List<Order>> GetOrdersAsync();
+namespace NorthwindPizza.Api.DAL.Repository.Interfaces;
 
-        Task<Order> CreateOrderAsync(Order order, List<OrderItem> orderItems);
-    }
+public interface IOrderRepository
+{
+    Task<List<Order>> GetOrdersAsync();
+
+    Task<Order> CreateOrderAsync(Order order, List<OrderItem> orderItems);
+
+    Task<Order?> GetOrderAsync(int id);
 }

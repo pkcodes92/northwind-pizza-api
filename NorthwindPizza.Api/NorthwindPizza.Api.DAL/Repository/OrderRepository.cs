@@ -38,6 +38,12 @@ public class OrderRepository(NorthwindPizzaContext context) : IOrderRepository
         }
     }
 
+    public async Task<Order?> GetOrderAsync(int id)
+    {
+        var dbResult = await this.context.Orders.FirstOrDefaultAsync(o => o.OrderId == id);
+        return dbResult;
+    }
+
     public async Task<List<Order>> GetOrdersAsync()
     {
         IQueryable<Order> query = this.context.Orders.AsNoTracking();

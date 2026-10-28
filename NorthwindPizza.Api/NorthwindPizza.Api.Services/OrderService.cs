@@ -16,12 +16,10 @@ public class OrderService(IOrderRepository orderRepo, ICustomerRepository custom
     
     public async Task<DTO.Models.Order?> CreateOrderAsync(CreateOrderRequest request)
     {
-        if (request.CustomerId <= 0 ||
-       request.Items is null ||
-       request.Items.Count == 0 ||
-       request.Items.Any(i => i.PizzaId <= 0 || i.Quantity <= 0) ||
-       request.Items.GroupBy(i => i.PizzaId)
-           .Any(g => g.Count() > 1))
+        if (request.CustomerId <= 0 || request.Items is null ||
+            request.Items.Count == 0 ||
+            request.Items.Any(i => i.PizzaId <= 0 || i.Quantity <= 0) || 
+            request.Items.GroupBy(i => i.PizzaId).Any(g => g.Count() > 1))
         {
             throw new ArgumentException("The order request is invalid.");
         }
@@ -77,6 +75,6 @@ public class OrderService(IOrderRepository orderRepo, ICustomerRepository custom
             return dbOrder.ToDto();
         }
 
-        throw new KeyNotFoundException("Customer not found.");
+        throw new KeyNotFoundException("Customer cannot found.");
     }
 }
