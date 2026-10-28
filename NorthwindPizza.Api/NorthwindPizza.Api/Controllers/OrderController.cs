@@ -62,7 +62,11 @@ public class OrderController(
             }); 
         }
 
-        return this.NotFound("The orders could not be found!");
+        return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+        {
+            StatusCode = StatusCodes.Status404NotFound,
+            Message = "The orders cannot be found!"
+        });
     }
 
     /// <summary>
@@ -119,7 +123,11 @@ public class OrderController(
             });
         }
 
-        return this.NotFound("The order could not be found!");
+        return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+        {
+            StatusCode = StatusCodes.Status404NotFound,
+            Message = "The order cannot be found!"
+        });
     }
 
     /// <summary>
@@ -161,12 +169,24 @@ public class OrderController(
                     });
                 }
 
-                return this.NotFound("The order could not be updated");
+                return this.StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorResponse
+                {
+                    StatusCode = StatusCodes.Status422UnprocessableEntity,
+                    Message = "The order cannot be updated!"
+                });
             }
 
-            return this.NotFound("The order status cannot be found!");
+            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "The order status cannot be found!"
+            });
         }
 
-        return this.NotFound("The order could not be found!");
+        return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+        {
+            StatusCode = StatusCodes.Status404NotFound,
+            Message = "The order cannot be found!"
+        });
     }
 }

@@ -37,7 +37,11 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
             string.IsNullOrWhiteSpace(request.LastName) ||
             string.IsNullOrWhiteSpace(request.Email))
         {
-            return this.BadRequest("First name, last name, and email are required.");
+            return this.StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "First name, last name, and email are required."
+            });
         }
 
         var normalizedFirstName = request.FirstName.Trim();
@@ -48,7 +52,11 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
             string.IsNullOrWhiteSpace(normalizedLastName) ||
             string.IsNullOrWhiteSpace(normalizedEmail))
         {
-            return this.BadRequest("First name, last name, and email cannot be empty.");
+            return this.StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse 
+            {
+                StatusCode = StatusCodes.Status400BadRequest,
+                Message = "First name, last name, and email cannot be empty."
+            });
         }
 
         var customer = new Customer
@@ -85,7 +93,11 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
 
         if (customer is null)
         {
-            return this.NotFound("The customer could not be found!");
+            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "The customer could not be found!"
+            });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetCustomerResponse
@@ -110,7 +122,11 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
 
         if (dbCustomers is null)
         {
-            return this.NotFound("The customers cannot be found!");
+            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "The customers cannot be found!"
+            });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetCustomersResponse

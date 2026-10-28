@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using NorthwindPizza.Api.DAL.Context;
 using NorthwindPizza.Api.DAL.Repository;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
+using NorthwindPizza.Api.DTO.Response;
 using NorthwindPizza.Api.Services;
 using NorthwindPizza.Api.Services.Interfaces;
 using Scalar.AspNetCore;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,6 +78,34 @@ app.MapScalarApiReference(options =>
 });
 
 app.UseHttpsRedirection();
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exceptionHandler = context.Features.Get<IExceptionHandlerFeature>();
+
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+        if (exceptionHandler is not null)
+        {
+            logger.LogError(exceptionHandler.Error,
+                "An unexpected error occurred while processing the request.");
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+            context.Response.ContentType = "application/json";
+
+            var response = new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status500InternalServerError,
+                Message = "An unexpected error occurred."
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+    });
+});
 
 app.UseAuthorization();
 

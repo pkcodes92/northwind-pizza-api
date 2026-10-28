@@ -35,7 +35,11 @@ public class PizzaController(ILogger<PizzaController> logger, IPizzaRepository p
 
         if (dbPizzas is null)
         {
-            return this.NotFound("Not able to get the pizzas from the database!");
+            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+            { 
+                StatusCode = StatusCodes.Status404NotFound, 
+                Message = "Not able to get the pizzas from the database!" 
+            });
         }
 
         var pizzas = dbPizzas.Select(x => x.ToDto()).ToList();
@@ -63,7 +67,11 @@ public class PizzaController(ILogger<PizzaController> logger, IPizzaRepository p
 
         if (dbPizza is null)
         {
-            return this.NotFound("The pizza could not be found!");
+            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "The pizza cannot be found!"
+            });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetPizzaResponse

@@ -36,7 +36,11 @@ public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogg
 
         if (dbOrderStatuses is null)
         {
-            return this.NotFound("The order statuses cannot be found!");
+            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "The order statuses cannot be found!"
+            });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetOrderStatusesResponse
@@ -62,7 +66,11 @@ public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogg
 
         if (dbOrderStatus is null)
         {
-            return this.NotFound("The order status cannot be found!");
+            return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
+            {
+                StatusCode = StatusCodes.Status404NotFound,
+                Message = "The order status cannot be found!"
+            });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetOrderStatusResponse
