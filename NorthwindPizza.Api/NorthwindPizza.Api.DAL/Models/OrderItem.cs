@@ -1,4 +1,6 @@
-﻿namespace NorthwindPizza.Api.DAL.Models;
+﻿using NorthwindPizza.Api.DTO.Models;
+
+namespace NorthwindPizza.Api.DAL.Models;
 
 public partial class OrderItem
 {
@@ -17,6 +19,18 @@ public partial class OrderItem
 
 public static class OrderItemExtensions
 {
+    public static DTO.Models.OrderItem ToDto(this OrderItem value, Pizza pizza)
+    {
+        return new DTO.Models.OrderItem
+        {
+            LineTotal = value.LineTotal,
+            PizzaId = value.PizzaId,
+            Quantity = value.Quantity,
+            UnitPrice = value.UnitPrice,
+            Name = pizza.Name
+        };
+    }
+
     public static DTO.Models.OrderItem ToDto(this OrderItem value)
     {
         return new DTO.Models.OrderItem
@@ -24,7 +38,8 @@ public static class OrderItemExtensions
             LineTotal = value.LineTotal,
             PizzaId = value.PizzaId,
             Quantity = value.Quantity,
-            UnitPrice = value.UnitPrice
+            UnitPrice = value.UnitPrice,
+            Name = null!
         };
     }
 }

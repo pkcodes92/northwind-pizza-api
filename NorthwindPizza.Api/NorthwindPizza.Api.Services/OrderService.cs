@@ -73,7 +73,7 @@ public class OrderService(
                 CustomerId = request.CustomerId,
                 OrderStatusId = 1, // Assumes 1 = Pending
                 TotalAmount = totalAmount,
-                OrderDate = DateTime.Now.ToString("G")
+                OrderDate = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
 
             var dbOrder = await this.orderRepo.CreateOrderAsync(order, orderItems);

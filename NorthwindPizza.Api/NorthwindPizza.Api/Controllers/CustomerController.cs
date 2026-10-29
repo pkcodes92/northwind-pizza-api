@@ -29,6 +29,7 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
     /// <see cref="GetCustomerResponse"/>.
     /// </returns>
     [HttpPost]
+    [ProducesResponseType(typeof(GetCustomerResponse), StatusCodes.Status201Created)]
     public async Task<ActionResult<GetCustomerResponse>> CreateCustomerAsync([FromBody] CreateCustomerRequest request)
     {
         this.logger.LogInformation("Creating customer");

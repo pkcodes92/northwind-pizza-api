@@ -22,6 +22,7 @@ namespace NorthwindPizza.Api.Controllers;
 /// <param name="orderItemRepo">The relevant order item repository injection.</param>
 /// <param name="orderStatusRepo">The relevant order status repository injection.</param>
 /// <param name="customerRepo">The customer repository injection.</param>
+/// <param name="pizzaRepo">The relevant pizza repository injection.</param>
 [ApiController]
 [Tags("Orders")]
 [Route("api/orders")]
@@ -31,7 +32,8 @@ public class OrderController(
     IOrderService orderSvc,
     IOrderItemRepository orderItemRepo,
     IOrderStatusRepository orderStatusRepo,
-    ICustomerRepository customerRepo) : ControllerBase
+    ICustomerRepository customerRepo,
+    IPizzaRepository pizzaRepo) : ControllerBase
 {
     private readonly ILogger<OrderController> logger = logger;
 
@@ -44,6 +46,8 @@ public class OrderController(
     private readonly IOrderStatusRepository orderStatusRepo = orderStatusRepo;
 
     private readonly ICustomerRepository customerRepo = customerRepo;
+
+    private readonly IPizzaRepository pizzaRepo = pizzaRepo;
 
     /// <summary>
     /// This endpoint will get all of the various orders from the database.
@@ -110,6 +114,7 @@ public class OrderController(
     /// <see cref="GetOrderResponse"/>.
     /// </returns>
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(GetOrderResponse), StatusCodes.Status200OK, Description = "The response when getting a single order")]
     public async Task<ActionResult<GetOrderResponse>> GetOrderAsync([FromRoute] int id)
     {
         this.logger.LogInformation("Getting the order by the ID");
@@ -124,9 +129,18 @@ public class OrderController(
 
             var dbCustomer = await this.customerRepo.GetCustomerAsync(dbOrder.CustomerId);
 
+            var orderItems = new List<DTO.Models.OrderItem>();
+
+            foreach (var item in dbOrderItems)
+            {
+                var dbPizza = await this.pizzaRepo.GetPizzaAsync(item.PizzaId);
+
+                orderItems.Add(item.ToDto(dbPizza));
+            }
+
             var order = dbOrder.ToDto(dbOrderStatus, dbCustomer!);
 
-            order.Items = dbOrderItems.Select(oi => oi.ToDto()).ToList();
+            order.Items = orderItems;
 
             return this.StatusCode(StatusCodes.Status200OK, new GetOrderResponse
             {
