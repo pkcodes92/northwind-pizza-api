@@ -29,6 +29,17 @@ builder.Services.AddScoped<IOrderStatusRepository, OrderStatusRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IPizzaRepository, PizzaRepository>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularClient", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi(opts => {
@@ -78,6 +89,8 @@ app.MapScalarApiReference(options =>
 });
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAngularClient");
 
 app.UseExceptionHandler(errorApp =>
 {
