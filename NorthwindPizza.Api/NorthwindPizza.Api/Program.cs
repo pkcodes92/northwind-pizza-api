@@ -86,6 +86,10 @@ app.MapScalarApiReference(options =>
 {
     options.Title = "Northwind Pizza API";
     options.DefaultHttpClient = new(ScalarTarget.CSharp, ScalarClient.HttpClient);
+    options.Theme = ScalarTheme.BluePlanet;
+    options.HideDarkModeToggle = false;
+    options.Layout = ScalarLayout.Modern;
+    options.ForceThemeMode = ThemeMode.Dark;
 });
 
 app.UseHttpsRedirection();
