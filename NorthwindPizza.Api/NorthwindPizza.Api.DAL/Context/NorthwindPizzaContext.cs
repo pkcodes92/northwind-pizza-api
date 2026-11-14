@@ -1,8 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
-using NorthwindPizza.Api.DAL.Models;
+﻿// <copyright file="NorthwindPizzaContext.cs" company="NY Tech">
+// ©️ 2026. All Rights Reserved.
+// </copyright>
 
 namespace NorthwindPizza.Api.DAL.Context;
 
+using Microsoft.EntityFrameworkCore;
+using NorthwindPizza.Api.DAL.Models;
+
+/// <summary>
+/// This class represents the relevant database layer for the API.
+/// </summary>
+/// <param name="options">The relevant database context options.</param>
 public partial class NorthwindPizzaContext(DbContextOptions<NorthwindPizzaContext> options) : DbContext(options)
 {
     public virtual DbSet<AppSetting> AppSettings => Set<AppSetting>();

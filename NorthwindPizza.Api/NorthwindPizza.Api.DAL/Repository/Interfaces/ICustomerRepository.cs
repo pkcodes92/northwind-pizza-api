@@ -17,7 +17,17 @@ public interface ICustomerRepository
     /// <returns>A unit of execution that contains a list of type <see cref="Customer"/>.</returns>
     Task<List<Customer>> GetCustomersAsync();
 
+    /// <summary>
+    /// This method definition will get a single customer from the database.
+    /// </summary>
+    /// <param name="id">The primary key of the customer.</param>
+    /// <returns>A unit of execution that contains a type of <see cref="Customer"/>.</returns>
     Task<Customer?> GetCustomerAsync(int id);
 
+    /// <summary>
+    /// This method definition will insert a new customer to the database.
+    /// </summary>
+    /// <param name="customer">The new customer information being added.</param>
+    /// <returns>A unit of execution that contains a type of <see cref="Customer"/>.</returns>
     Task<Customer> AddCustomerAsync(Customer customer);
 }

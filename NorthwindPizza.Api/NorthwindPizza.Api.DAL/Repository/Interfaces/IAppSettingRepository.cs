@@ -4,6 +4,9 @@
 
 namespace NorthwindPizza.Api.DAL.Repository.Interfaces;
 
+/// <summary>
+/// This interface defines methods that interact with the AppSetting database entity.
+/// </summary>
 public interface IAppSettingRepository
 {
 }
