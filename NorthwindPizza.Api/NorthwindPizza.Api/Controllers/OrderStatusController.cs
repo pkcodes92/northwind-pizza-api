@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// <copyright file="OrderStatusController.cs" company="NY Tech">
+// ©️ 2026. All Rights Reserved.
+// </copyright>
+
+namespace NorthwindPizza.Api.Controllers;
+
+using Microsoft.AspNetCore.Mvc;
 using NorthwindPizza.Api.DAL.Models;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
 using NorthwindPizza.Api.DTO.Response;
-
-namespace NorthwindPizza.Api.Controllers;
 
 /// <summary>
 /// This controller contains endpoints for the Order Status.
@@ -13,7 +17,7 @@ namespace NorthwindPizza.Api.Controllers;
 [ApiController]
 [Tags("Order Status")]
 [Route("api/orderstatuses")]
-public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogger<OrderStatusController> logger) 
+public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogger<OrderStatusController> logger)
     : ControllerBase
 {
     private readonly ILogger<OrderStatusController> logger = logger;
@@ -39,13 +43,13 @@ public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogg
             return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = "The order statuses cannot be found!"
+                Message = "The order statuses cannot be found!",
             });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetOrderStatusesResponse
         {
-            OrderStatuses = dbOrderStatuses.Select(x => x.ToDto()).ToList()
+            OrderStatuses = dbOrderStatuses.Select(x => x.ToDto()).ToList(),
         });
     }
 
@@ -69,13 +73,13 @@ public class OrderStatusController(IOrderStatusRepository orderStatusRepo, ILogg
             return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = "The order status cannot be found!"
+                Message = "The order status cannot be found!",
             });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetOrderStatusResponse
         {
-            OrderStatus = dbOrderStatus.ToDto()
+            OrderStatus = dbOrderStatus.ToDto(),
         });
     }
 }

@@ -1,12 +1,15 @@
+// <copyright file="OrderController.cs" company="NY Tech">
+// ©️ 2026. All Rights Reserved.
+// </copyright>
+
+namespace NorthwindPizza.Api.Controllers;
+
 using Microsoft.AspNetCore.Mvc;
 using NorthwindPizza.Api.DAL.Models;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
-using NorthwindPizza.Api.DTO.Models;
 using NorthwindPizza.Api.DTO.Request;
 using NorthwindPizza.Api.DTO.Response;
 using NorthwindPizza.Api.Services.Interfaces;
-
-namespace NorthwindPizza.Api.Controllers;
 
 /// <summary>
 /// This class contains all the relevant endpoints for the Order entity.
@@ -14,7 +17,7 @@ namespace NorthwindPizza.Api.Controllers;
 /// <remarks>
 /// DONE: Implement the endpoint of POST /api/orders
 /// DONE: Implement the endpoint of GET /api/orders/{id}
-/// DONE: Implement the endpoint of PATCH /api/orders/{id}/status
+/// DONE: Implement the endpoint of PATCH /api/orders/{id}/status.
 /// </remarks>
 /// <param name="logger">The relevant logging mechanism injection.</param>
 /// <param name="orderRepo">The necessary order repository injection.</param>
@@ -76,7 +79,7 @@ public class OrderController(
 
         return this.StatusCode(StatusCodes.Status200OK, new GetOrdersResponse
         {
-            Orders = dtoOrders
+            Orders = dtoOrders,
         });
     }
 
@@ -144,14 +147,14 @@ public class OrderController(
 
             return this.StatusCode(StatusCodes.Status200OK, new GetOrderResponse
             {
-                Order = order
+                Order = order,
             });
         }
 
         return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
         {
             StatusCode = StatusCodes.Status404NotFound,
-            Message = "The order cannot be found!"
+            Message = "The order cannot be found!",
         });
     }
 
@@ -165,7 +168,8 @@ public class OrderController(
     /// <see cref="PatchOrderResponse"/>.
     /// </returns>
     [HttpPatch("{id}/status")]
-    public async Task<ActionResult<PatchOrderResponse>> PatchOrderAsync([FromRoute] int id,
+    public async Task<ActionResult<PatchOrderResponse>> PatchOrderAsync(
+        [FromRoute] int id,
         [FromBody] PatchOrderRequest request)
     {
         this.logger.LogInformation("Patching the order by updating the status");
@@ -190,28 +194,28 @@ public class OrderController(
 
                     return this.StatusCode(StatusCodes.Status200OK, new PatchOrderResponse
                     {
-                        Order = updatedOrder
+                        Order = updatedOrder,
                     });
                 }
 
                 return this.StatusCode(StatusCodes.Status422UnprocessableEntity, new ErrorResponse
                 {
                     StatusCode = StatusCodes.Status422UnprocessableEntity,
-                    Message = "The order cannot be updated!"
+                    Message = "The order cannot be updated!",
                 });
             }
 
             return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = "The order status cannot be found!"
+                Message = "The order status cannot be found!",
             });
         }
 
         return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
         {
             StatusCode = StatusCodes.Status404NotFound,
-            Message = "The order cannot be found!"
+            Message = "The order cannot be found!",
         });
     }
 }

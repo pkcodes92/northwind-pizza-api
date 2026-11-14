@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// <copyright file="PizzaController.cs" company="NY Tech">
+// ©️ 2026. All Rights Reserved.
+// </copyright>
+
+namespace NorthwindPizza.Api.Controllers;
+
+using Microsoft.AspNetCore.Mvc;
 using NorthwindPizza.Api.DAL.Models;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
 using NorthwindPizza.Api.DTO.Response;
-
-namespace NorthwindPizza.Api.Controllers;
 
 /// <summary>
 /// This controller will contain endpoints for the Pizza entity.
@@ -37,7 +41,7 @@ public class PizzaController(ILogger<PizzaController> logger, IPizzaRepository p
 
         return this.StatusCode(StatusCodes.Status200OK, new GetPizzasResponse
         {
-            Pizzas = pizzas
+            Pizzas = pizzas,
         });
     }
 
@@ -61,13 +65,13 @@ public class PizzaController(ILogger<PizzaController> logger, IPizzaRepository p
             return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = "The pizza cannot be found!"
+                Message = "The pizza cannot be found!",
             });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetPizzaResponse
         {
-            Pizza = dbPizza.ToDto()
+            Pizza = dbPizza.ToDto(),
         });
     }
 }

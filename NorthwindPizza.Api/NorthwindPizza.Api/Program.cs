@@ -1,3 +1,8 @@
+// <copyright file="Program.cs" company="NY Tech">
+// ©️ 2026. All Rights Reserved.
+// </copyright>
+
+using System.Text.Json;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
@@ -8,7 +13,6 @@ using NorthwindPizza.Api.DTO.Response;
 using NorthwindPizza.Api.Services;
 using NorthwindPizza.Api.Services.Interfaces;
 using Scalar.AspNetCore;
-using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,8 +45,10 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddControllers();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi(opts => {
+builder.Services.AddOpenApi(opts =>
+{
     opts.AddScalarTransformers();
     opts.AddDocumentTransformer((document, context, cancellationToken) =>
     {
@@ -52,7 +58,7 @@ builder.Services.AddOpenApi(opts => {
             ["Order Status"] = "The endpoint collection about the Order Status entity.",
             ["Customers"] = "The endpoint collection about the Customer entity.",
             ["Employees"] = "The enpoint collection about the Employee entity.",
-            ["Orders"] = "The endpoint collection about the Order entity."
+            ["Orders"] = "The endpoint collection about the Order entity.",
         };
 
         foreach (var tag in tagDescriptions)
@@ -69,11 +75,10 @@ builder.Services.AddOpenApi(opts => {
                 document!.Tags!.Add(new OpenApiTag
                 {
                     Name = tag.Key,
-                    Description = tag.Value
+                    Description = tag.Value,
                 });
             }
         }
-
 
         return Task.CompletedTask;
     });
@@ -106,7 +111,8 @@ app.UseExceptionHandler(errorApp =>
 
         if (exceptionHandler is not null)
         {
-            logger.LogError(exceptionHandler.Error,
+            logger.LogError(
+                exceptionHandler.Error,
                 "An unexpected error occurred while processing the request.");
 
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -116,7 +122,7 @@ app.UseExceptionHandler(errorApp =>
             var response = new ErrorResponse
             {
                 StatusCode = StatusCodes.Status500InternalServerError,
-                Message = "An unexpected error occurred."
+                Message = "An unexpected error occurred.",
             };
 
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));

@@ -1,10 +1,14 @@
+// <copyright file="CustomerController.cs" company="NY Tech">
+// ©️ 2026. All Rights Reserved.
+// </copyright>
+
+namespace NorthwindPizza.Api.Controllers;
+
 using Microsoft.AspNetCore.Mvc;
 using NorthwindPizza.Api.DAL.Models;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
 using NorthwindPizza.Api.DTO.Request;
 using NorthwindPizza.Api.DTO.Response;
-
-namespace NorthwindPizza.Api.Controllers;
 
 /// <summary>
 /// This class contains endpoints for the Customer entity.
@@ -41,7 +45,7 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
             return this.StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse
             {
                 StatusCode = StatusCodes.Status400BadRequest,
-                Message = "First name, last name, and email are required."
+                Message = "First name, last name, and email are required.",
             });
         }
 
@@ -53,10 +57,10 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
             string.IsNullOrWhiteSpace(normalizedLastName) ||
             string.IsNullOrWhiteSpace(normalizedEmail))
         {
-            return this.StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse 
+            return this.StatusCode(StatusCodes.Status400BadRequest, new ErrorResponse
             {
                 StatusCode = StatusCodes.Status400BadRequest,
-                Message = "First name, last name, and email cannot be empty."
+                Message = "First name, last name, and email cannot be empty.",
             });
         }
 
@@ -66,14 +70,14 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
             LastName = normalizedLastName,
             Email = normalizedEmail,
             Phone = string.IsNullOrWhiteSpace(request.Phone) ? null : request.Phone.Trim(),
-            CreatedAt = string.Empty
+            CreatedAt = string.Empty,
         };
 
         var createdCustomer = await this.customerRepo.AddCustomerAsync(customer);
 
         return this.StatusCode(StatusCodes.Status201Created, new GetCustomerResponse
         {
-            Customer = createdCustomer.ToDto()
+            Customer = createdCustomer.ToDto(),
         });
     }
 
@@ -97,13 +101,13 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
             return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
             {
                 StatusCode = StatusCodes.Status404NotFound,
-                Message = "The customer could not be found!"
+                Message = "The customer could not be found!",
             });
         }
 
         return this.StatusCode(StatusCodes.Status200OK, new GetCustomerResponse
         {
-            Customer = customer.ToDto()
+            Customer = customer.ToDto(),
         });
     }
 
@@ -127,14 +131,14 @@ public class CustomerController(ILogger<CustomerController> logger, ICustomerRep
         {
             return this.StatusCode(StatusCodes.Status200OK, new GetCustomersResponse
             {
-                Customers = dbCustomers.Select(x => x.ToDto()).ToList()
+                Customers = dbCustomers.Select(x => x.ToDto()).ToList(),
             });
         }
 
         return this.StatusCode(StatusCodes.Status404NotFound, new ErrorResponse
         {
             StatusCode = StatusCodes.Status404NotFound,
-            Message = "The customers could not be found!"
+            Message = "The customers could not be found!",
         });
     }
 }
