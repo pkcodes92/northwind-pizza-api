@@ -1,10 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿// <copyright file="PizzaRepository.cs" company="NY Tech">
+// ©️ 2026. All Rights Reserved.
+// </copyright>
+
+namespace NorthwindPizza.Api.DAL.Repository;
+
+using Microsoft.EntityFrameworkCore;
 using NorthwindPizza.Api.DAL.Context;
 using NorthwindPizza.Api.DAL.Models;
 using NorthwindPizza.Api.DAL.Repository.Interfaces;
 
-namespace NorthwindPizza.Api.DAL.Repository;
-
+/// <summary>
+/// This class implements methods that have been defined in <see cref="IPizzaRepository"/>.
+/// </summary>
+/// <param name="context">The relevant database context injection.</param>
 public class PizzaRepository(NorthwindPizzaContext context) : IPizzaRepository
 {
     private readonly NorthwindPizzaContext context = context;
