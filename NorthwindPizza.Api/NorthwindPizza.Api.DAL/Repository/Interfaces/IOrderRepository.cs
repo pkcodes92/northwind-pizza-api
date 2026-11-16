@@ -25,7 +25,17 @@ public interface IOrderRepository
     /// <returns>A unit of execution that contains a list of <see cref="Order"/>.</returns>
     Task<Order> CreateOrderAsync(Order order, List<OrderItem> orderItems);
 
+    /// <summary>
+    /// This method definition will get a single order from the database.
+    /// </summary>
+    /// <param name="id">The primary key of the order to search.</param>
+    /// <returns>A unit of execution that contains a type of <see cref="Order"/>.</returns>
     Task<Order?> GetOrderAsync(int id);
 
+    /// <summary>
+    /// This method definition will update an existing order in the database.
+    /// </summary>
+    /// <param name="order">The relevant order information to update.</param>
+    /// <returns>A unit of execution that contains a type of <see cref="Order"/>.</returns>
     Task<Order?> UpdateOrderAsync(Order order);
 }

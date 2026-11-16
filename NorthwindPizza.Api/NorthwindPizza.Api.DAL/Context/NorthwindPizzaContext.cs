@@ -13,20 +13,45 @@ using NorthwindPizza.Api.DAL.Models;
 /// <param name="options">The relevant database context options.</param>
 public partial class NorthwindPizzaContext(DbContextOptions<NorthwindPizzaContext> options) : DbContext(options)
 {
-    public virtual DbSet<AppSetting> AppSettings => Set<AppSetting>();
+    /// <summary>
+    /// The relevant AppSettings table representation.
+    /// </summary>
+    public virtual DbSet<AppSetting> AppSettings => this.Set<AppSetting>();
 
-    public virtual DbSet<Customer> Customers => Set<Customer>();
+    /// <summary>
+    /// The relevant Customers table representation.
+    /// </summary>
+    public virtual DbSet<Customer> Customers => this.Set<Customer>();
 
-    public virtual DbSet<Employee> Employees => Set<Employee>();
+    /// <summary>
+    /// The relevant Employees table representation.
+    /// </summary>
+    public virtual DbSet<Employee> Employees => this.Set<Employee>();
 
-    public virtual DbSet<OrderItem> OrderItems => Set<OrderItem>();
+    /// <summary>
+    /// The relevant OrderItems table representation.
+    /// </summary>
+    public virtual DbSet<OrderItem> OrderItems => this.Set<OrderItem>();
 
-    public virtual DbSet<OrderStatus> OrderStatuses => Set<OrderStatus>();
+    /// <summary>
+    /// The relevant OrderStatuses table representation.
+    /// </summary>
+    public virtual DbSet<OrderStatus> OrderStatuses => this.Set<OrderStatus>();
 
-    public virtual DbSet<Order> Orders => Set<Order>();
+    /// <summary>
+    /// The relevant Orders table representation.
+    /// </summary>
+    public virtual DbSet<Order> Orders => this.Set<Order>();
 
-    public virtual DbSet<Pizza> Pizzas => Set<Pizza>();
+    /// <summary>
+    /// The relevant Pizzas table representation.
+    /// </summary>
+    public virtual DbSet<Pizza> Pizzas => this.Set<Pizza>();
 
+    /// <summary>
+    /// This method binds the relevant tables to the necessary C-sharp objects.
+    /// </summary>
+    /// <param name="modelBuilder">The relevant modelBuilder library.</param>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -81,7 +106,7 @@ public partial class NorthwindPizzaContext(DbContextOptions<NorthwindPizzaContex
 
             entity.Property(e => e.IsActive)
                 .IsRequired()
-                .HasDefaultValue(1);            
+                .HasDefaultValue(1);
         });
 
         /*
@@ -165,10 +190,10 @@ public partial class NorthwindPizzaContext(DbContextOptions<NorthwindPizzaContex
             entity.Property(e => e.LineTotal).IsRequired();
         });
 
-        /* 
-         * Employees 
+        /*
+         * Employees
          */
-        modelBuilder.Entity<Employee>(entity => 
+        modelBuilder.Entity<Employee>(entity =>
         {
             entity.ToTable("Employees", table =>
             {
@@ -193,7 +218,7 @@ public partial class NorthwindPizzaContext(DbContextOptions<NorthwindPizzaContex
         /*
          * AppSettings
          */
-        modelBuilder.Entity<AppSetting>(entity => 
+        modelBuilder.Entity<AppSetting>(entity =>
         {
             entity.ToTable("AppSettings");
 
